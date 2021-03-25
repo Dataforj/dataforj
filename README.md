@@ -39,7 +39,9 @@ One of the goals of Dataforj is to make it simple to run models on different env
 
 The Dataforj CLI can be isntalled anywhere using pip.  This means it can easily integrate with DevOps tooling.
 
-pip install dataforj (not yet working)
+```bash
+pip install dataforj # not yet working)
+```
 
 It can be used in development environments to create and update projects.  E.g.
 
