@@ -1,0 +1,7 @@
+spark:
+  master: 'local[4]'
+  SparkConf: 
+    "spark.sql.warehouse.dir": "ignore"
+
+dataflow-config:
+  customers_uri: 'example/data/customers.csv'    

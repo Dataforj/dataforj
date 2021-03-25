@@ -1,0 +1,5 @@
+id,name,flag
+1000,'topper',true
+1001,'bottom',true,
+1002,'roofer',false
+1003,'planter',true

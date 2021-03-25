@@ -1,0 +1,104 @@
+graph:
+- transactions
+- products
+- transactions_with_products
+- customers
+- customers_latest
+- result
+- filter
+- sink
+name: example data
+steps:
+  customers:
+    depends_on: []
+    unit_tests: []
+    data_quality_tests: []
+    schema: []
+    format_type: csv
+    name: customers
+    options:
+      header: 'true'
+    type: SourceStep
+    uri: {customers_uri}
+  customers_latest:
+    depends_on:
+    - customers
+    unit_tests: []
+    data_quality_tests: []
+    schema: []
+    name: customers_latest
+    sql_file_path: example/sql/customers_latest.sql
+    type: SQLStep
+  filter:
+    depends_on:
+    - result
+    unit_tests: 
+    - example/unit_tests/filter.py  
+    data_quality_tests: 
+    - example/dq_tests/filter.py  
+    name: filter
+    pyspark_file_path: example/pyspark/filter.py
+    type: PySparkStep
+    schema:
+      - name: city
+        tests: 
+          - not_null
+          - accepted_values: ['Amsterdam', 'Dublin', 'Frankfurt']
+      - name: flag
+        tests: 
+          - not_null
+  products:
+    depends_on: []
+    unit_tests: []
+    data_quality_tests: []
+    schema: []
+    format_type: csv
+    name: products
+    options:
+      header: 'true'
+    type: SourceStep
+    uri: example/data/products.csv
+  result:
+    depends_on:
+    - transactions_with_products
+    - customers_latest
+    unit_tests: []
+    data_quality_tests: []
+    schema: []
+    name: result
+    sql_file_path: example/sql/result.sql
+    type: SQLStep
+  sink:
+    depends_on:
+    - filter
+    unit_tests: []
+    data_quality_tests: []
+    schema: []
+    format_type: csv
+    name: sink
+    options:
+      header: 'true'
+    type: SinkStep
+    uri: example/data/result.csv
+    mode: overwrite
+  transactions:
+    depends_on: []
+    unit_tests: []
+    data_quality_tests: []
+    schema: []
+    format_type: csv
+    name: transactions
+    options:
+      header: 'true'
+    type: SourceStep
+    uri: example/data/transactions.csv
+  transactions_with_products:
+    depends_on:
+    - products
+    - transactions
+    unit_tests: []
+    data_quality_tests: []
+    schema: []
+    name: transactions_with_products
+    sql_file_path: example/sql/transactions_with_products.sql
+    type: SQLStep

@@ -1,0 +1,10 @@
+id,name,city,date,amount,flag
+1,Patrick,Amsterdam,2020-03-01,50.0,true
+1,Patrick,Amsterdam,2020-03-02,150.0,true
+1,Patrick,Amsterdam,2020-03-02,200.0,true
+2,Aryuna,Amsterdam,2020-03-02,150.0,true
+2,Aryuna,Amsterdam,2020-03-02,200.0,true
+3,Amelia,Dublin,2020-03-02,150.0,true
+3,Amelia,Dublin,2020-03-02,200.0,true
+4,Max,Frankfurt,2020-03-02,150.0,true
+4,Max,Frankfurt,2020-03-02,200.0,true
