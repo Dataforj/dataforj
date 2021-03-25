@@ -40,7 +40,7 @@ One of the goals of Dataforj is to make it simple to run models on different env
 The Dataforj CLI can be isntalled anywhere using pip.  This means it can easily integrate with DevOps tooling.
 
 ```bash
-pip install dataforj # not yet working)
+pip install dataforj # not yet working
 ```
 
 It can be used in development environments to create and update projects.  E.g.
@@ -111,7 +111,7 @@ Once again, you can expect a DataFrame named in the format {step_name}_df to be 
 
 ## Source / Sink steps
 
-Source and Sink steps are defined in the the Dataforj YAML.  The format type (e.g. CSV, Parquet, JSON, etc), the URI (i.e. the location of the data) as well as any custom options are defined there.  For Sinks the write mode (e.g. "overwrite") must also be defined.  For Source steps the standard data qualityc checks can be applied.
+Source and Sink steps are defined in the the Dataforj YAML.  The format type (e.g. CSV, Parquet, JSON, etc), the URI (i.e. the location of the data) as well as any custom options are defined there.  For Sinks the write mode (e.g. "overwrite") must also be defined.  For Source steps the standard data quality checks can be applied.
 
 ## SQL step
 
@@ -123,7 +123,7 @@ from customers_latest c, transactions_with_products t
 where c.id = t.customer_id
 ```
 
-The output of the SQL step will be the result of the SQL.
+The output of the SQL step will be the result of the SQL query.
 
 ## PysPark step
 
