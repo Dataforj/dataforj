@@ -1,6 +1,6 @@
 # Dataforj
 
-Dataforj is a tool to easily create data models with good engineering principles, such as text based code, unit tests, data quality checks and a seperation of the development and runtime environments.  Data Analysts and Data Engineers are able to work on the same code base to create reliable projects that can be run on any Spark cluster.
+Dataforj is a tool to easily create data models with good engineering principles, such as text based code, unit tests, data quality checks, code coeverage checks and a seperation of the development and runtime environments.  Data Analysts and Data Engineers are able to work on the same code base to create reliable projects that can be run on any Spark cluster.
 
 ## Features
 
@@ -29,11 +29,29 @@ A Dataforj model is composed of steps which are chained together and executed in
 
 ## Runs on any Spark Cluster
 
-Dataforj can connect to and run on any Spark cluster or service.  Each environment has its own configuration YAML which specifies how to connect to the cluster in that environment.  
+Dataforj can connect to and run on any Spark cluster or service (e.g. Databricks, Cloudera, Local cluster, etc).  Each environment has its own configuration YAML which specifies how to connect to the cluster in that environment.  
 
 ## Environments
 
 One of the goals of Dataforj is to make it simple to run models on different environments easily.  Each project has an env folder where YAML files with the config for each environment are located.  This YAML file can be used to specify the connection to the Spark cluster for the environment, and environment specific values that will be replaced in the project YAML (e.g. the location where a Source step should pick up the data).
+
+An example for local testing that will use a local instance of Spark could look like this.
+
+```yaml
+spark:
+  master: 'local[4]'
+  SparkConf: 
+    "spark.sql.warehouse.dir": "ignore"
+```
+
+An example for connecting to a PRD Cloudera cluster could look like this:
+
+```yaml
+spark:
+  master: 'prdcluster.network.com:7077'
+  SparkConf: 
+    "spark.sql.warehouse.dir": "ignore"
+```
 
 ## CLI
 
