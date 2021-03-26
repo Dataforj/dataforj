@@ -1,6 +1,6 @@
 # Dataforj
 
-Dataforj is a tool to easily create data models with good engineering principles, such as text based code, unit tests, data quality checks, code coeverage checks and a seperation of the development and runtime environments.  Data Analysts and Data Engineers are able to work on the same code base to create reliable projects that can be run on any Spark cluster.
+Dataforj is a tool to easily create data models with good engineering principles, such as text based code, unit tests, data quality checks, code coeverage checks and a seperation of the development and runtime environments.  Data Analysts and Data Engineers are able to work on the same code base to create reliable projects that can be run on any Spark cluster.  As the Dataforj job runs on a Spark cluster, it can handle workloads of any size.
 
 ## Features
 
