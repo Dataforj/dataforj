@@ -54,3 +54,8 @@ def add_union_step(flow: Dataflow, name: str, depends_on: list):
 def run_flow(flow: Dataflow, env: str):
     env = DataforjEnv(flow.name, env)
     flow.run(env)
+
+
+def save_flow(file_name: str, flow: Dataflow):
+    with open(file_name, 'w') as f:
+        f.write(flow.to_yaml())
