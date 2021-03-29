@@ -15,9 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from webui import project
+from webui.views import project, dag
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('project/open', project.open),
+    path('project/new', project.new),
+    path('dag/view', dag.view),
 ]
