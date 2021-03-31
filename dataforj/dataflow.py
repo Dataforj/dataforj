@@ -64,7 +64,6 @@ def parse_graph(steps: list) -> list:
     for step in steps:
         g.add_node(step.name)
         if isinstance(step, SourceStep) is False:
-            g.add_node(step.name)
             for dependancy in step.depends_on:
                 g.add_edge(dependancy, step.name)
     # Now make sure that the graph is legal
@@ -72,15 +71,31 @@ def parse_graph(steps: list) -> list:
     return list(nx.topological_sort(g))
 
 
+def to_dagre_nodes_edges(steps: dict) -> str:
+    print(f'steps [{steps}]')
+    result = []
+    for step in steps.values():
+        print(f'step [{step}]')
+        result.append(f'g.setNode(\"{step.name}\", '
+            f'{{labelType: \"html\", '
+            f'label: \"<b>{step.dagre_type()}</b><br>{step.name}\", '
+           f'shape: \"{step.dagre_shape()}\", '
+            f'style: \"fill: {step.dagre_colour()}\"}});')
+        if isinstance(step, SourceStep) is False:
+            for dependancy in step.depends_on:
+                result.append(f'g.setEdge(\"{dependancy}\", \"{step.name}\");')
+    return "\n".join(result)
+
+
 def from_yaml(yaml_text):
     yaml_contents = yaml.safe_load(yaml_text)
     return Dataflow(yaml_contents['name'], yaml_contents['graph'],
-                    yaml_contents['steps'])
+                    yaml_contents['steps'], yaml_contents['description'])
 
 
 class Dataflow(object):
 
-    def __init__(self, name: str, graph: list, step_configs: dict):
+    def __init__(self, name: str, graph: list, step_configs: dict, description: str):
         def convert(step_config: dict):
             if step_config['type'] == 'SourceStep':
                 return SourceStep(
@@ -92,7 +107,8 @@ class Dataflow(object):
                     unit_tests=step_config.get('unit_tests', []),
                     data_quality_tests=step_config.get('data_quality_tests',
                                                        []),
-                    schema=step_config.get('schema', []))
+                    schema=step_config.get('schema', []),
+                    description=step_config.get('description', ''))
             elif step_config['type'] == 'SinkStep':
                 return SinkStep(
                     name=step_config.get('name'),
@@ -104,7 +120,8 @@ class Dataflow(object):
                     unit_tests=step_config.get('unit_tests', []),
                     data_quality_tests=step_config.get('data_quality_tests',
                                                        []),
-                    schema=step_config.get('schema', []))
+                    schema=step_config.get('schema', []),
+                    description=step_config.get('description', ''))
             elif step_config['type'] == 'SQLStep':
                 return SQLStep(
                     name=step_config.get('name'),
@@ -113,7 +130,8 @@ class Dataflow(object):
                     unit_tests=step_config.get('unit_tests', []),
                     data_quality_tests=step_config.get('data_quality_tests',
                                                        []),
-                    schema=step_config.get('schema', []))
+                    schema=step_config.get('schema', []),
+                    description=step_config.get('description', ''))
             elif step_config['type'] == 'UnionStep':
                 return UnionStep(
                     name=step_config.get('name'),
@@ -121,7 +139,8 @@ class Dataflow(object):
                     unit_tests=step_config.get('unit_tests', []),
                     data_quality_tests=step_config.get('data_quality_tests',
                                                        []),
-                    schema=step_config.get('schema', []))
+                    schema=step_config.get('schema', []),
+                    description=step_config.get('description', ''))
             elif step_config['type'] == 'PySparkStep':
                 return PySparkStep(
                     name=step_config.get('name'),
@@ -130,12 +149,14 @@ class Dataflow(object):
                     unit_tests=step_config.get('unit_tests', []),
                     data_quality_tests=step_config.get('data_quality_tests',
                                                        []),
-                    schema=step_config.get('schema', []))
+                    schema=step_config.get('schema', []),
+                    description=step_config.get('description', ''))
             else:
                 type_name = step_config['type']
                 raise Exception(f'Unknown type [{type_name}]')
 
         self.name = name
+        self.description = description
         self._graph = graph
         self._steps = {step_config['name']: convert(step_config)
                        for step_config in step_configs.values()}
@@ -143,8 +164,10 @@ class Dataflow(object):
     def __eq__(self, other):
         if isinstance(self, other.__class__):
             return self.name == other.name and \
+                   self.description == other.description and \
                    self._steps == other._steps and \
-                   self._graph == other._graph
+                   self._graph == other._graph and \
+                   self.desc == other._graph
         return False
 
     def add_step(self, step):
@@ -246,3 +269,6 @@ class Dataflow(object):
             if(step_name == step):
                 exec(f'{step_name}_df.show()')
                 break
+
+    def to_dagre_nodes_edges(self):
+        return to_dagre_nodes_edges(self._steps)        

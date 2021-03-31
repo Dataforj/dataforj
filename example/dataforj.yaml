@@ -7,7 +7,8 @@ graph:
 - result
 - filter
 - sink
-name: example data
+name: Example Project
+description: An example Dataforj dataflow
 steps:
   customers:
     depends_on: []
@@ -15,6 +16,7 @@ steps:
     data_quality_tests: []
     schema: []
     format_type: csv
+    description: Latest daily extract of all customers in CSV form.
     name: customers
     options:
       header: 'true'
@@ -27,6 +29,7 @@ steps:
     data_quality_tests: []
     schema: []
     name: customers_latest
+    description: Selects the latest customers.
     sql_file_path: example/sql/customers_latest.sql
     type: SQLStep
   filter:
@@ -37,6 +40,7 @@ steps:
     data_quality_tests: 
     - example/dq_tests/filter.py  
     name: filter
+    description: Filter based on the flag which is passed in.
     pyspark_file_path: example/pyspark/filter.py
     type: PySparkStep
     schema:
@@ -54,6 +58,7 @@ steps:
     schema: []
     format_type: csv
     name: products
+    description: All products from the backend master product system.
     options:
       header: 'true'
     type: SourceStep
@@ -66,6 +71,7 @@ steps:
     data_quality_tests: []
     schema: []
     name: result
+    description: Joins the latest customers with the prod/trans data to create the report.
     sql_file_path: example/sql/result.sql
     type: SQLStep
   sink:
@@ -76,6 +82,7 @@ steps:
     schema: []
     format_type: csv
     name: sink
+    description: Outputs the report as a CSV file.
     options:
       header: 'true'
     type: SinkStep
@@ -88,6 +95,7 @@ steps:
     schema: []
     format_type: csv
     name: transactions
+    description: Latest transctions from the backend transction processing system.
     options:
       header: 'true'
     type: SourceStep
@@ -100,5 +108,6 @@ steps:
     data_quality_tests: []
     schema: []
     name: transactions_with_products
+    description: Joins the product and transaction datasets together.
     sql_file_path: example/sql/transactions_with_products.sql
     type: SQLStep

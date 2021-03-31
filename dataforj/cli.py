@@ -196,4 +196,4 @@ def debug_step(dir: str, env_name: str, step: str):
 
 
 if __name__ == "__main__":
-    run('example', 'local')
+    print(open_flow('/Users/patrickmcgloin/work/dataforj/example').to_dagre_nodes_edges())

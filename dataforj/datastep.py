@@ -1,13 +1,23 @@
 class Datastep():
     def __init__(self, name: str, depends_on: list = [], unit_tests: list = [],
-                 data_quality_tests: list = [], schema: list = []):
+                 data_quality_tests: list = [], schema: list = [], description: str = ''):
         self.name = name
         self.depends_on = depends_on
         self.unit_tests = unit_tests
         self.data_quality_tests = data_quality_tests
         self.schema = schema
+        self.description = description
 
     def to_yaml(self) -> dict:
+        pass
+
+    def dagre_shape(self) -> dict:
+        pass
+
+    def dagre_colour(self) -> dict:
+        pass
+
+    def dagre_type(self) -> dict:
         pass
 
     def compile(self) -> str:
@@ -17,9 +27,9 @@ class Datastep():
 class SourceStep(Datastep):
     def __init__(self, name, uri: str, format_type: str,
                  options: dict, depends_on: list = [], unit_tests: list = [],
-                 data_quality_tests: list = [], schema: list = []):
+                 data_quality_tests: list = [], schema: list = [], description: str = ''):
         Datastep.__init__(self, name, depends_on, unit_tests,
-                          data_quality_tests, schema)
+                          data_quality_tests, schema, description)
         self.uri = uri
         self.format_type = format_type
         self.options = options
@@ -43,6 +53,7 @@ class SourceStep(Datastep):
             'unit_tests': self.unit_tests,
             'data_quality_tests': self.data_quality_tests,
             'schema': self.schema,
+            'description': self.description,
             'uri': self.uri,
             'format_type': self.format_type,
             'options': self.options
@@ -55,14 +66,23 @@ class SourceStep(Datastep):
 {self.name}_df = spark.read{options_text}.format('{self.format_type}').load('{self.uri}') # noqa: E501
         """
 
+    def dagre_shape(self) -> dict:
+        return 'circle'
+
+    def dagre_colour(self) -> dict:
+        return 'Cyan'
+
+    def dagre_type(self) -> dict:
+        return 'Source'
+
 
 class SinkStep(Datastep):
     def __init__(self, name: str, uri: str, format_type: str,
                  options: dict, mode: str, depends_on: list = [],
                  unit_tests: list = [], data_quality_tests: list = [],
-                 schema: list = []):
+                 schema: list = [], description: str = ''):
         Datastep.__init__(self, name, depends_on, unit_tests,
-                          data_quality_tests, schema)
+                          data_quality_tests, schema, description)
         self.uri = uri
         self.format_type = format_type
         self.options = options
@@ -88,6 +108,7 @@ class SinkStep(Datastep):
             'unit_tests': self.unit_tests,
             'data_quality_tests': self.data_quality_tests,
             'schema': self.schema,
+            'description': self.description,
             'uri': self.uri,
             'format_type': self.format_type,
             'options': self.options,
@@ -106,13 +127,22 @@ class SinkStep(Datastep):
     .save('{self.uri}')
         """
 
+    def dagre_shape(self) -> dict:
+        return 'circle'
+
+    def dagre_colour(self) -> dict:
+        return 'DeepSkyBlue'
+
+    def dagre_type(self) -> dict:
+        return 'Sink'
+
 
 class SQLStep(Datastep):
     def __init__(self, name: str, sql_file_path: str, depends_on: list = [],
                  unit_tests: list = [], data_quality_tests: list = [],
-                 schema: list = []):
+                 schema: list = [], description: str = ''):
         Datastep.__init__(self, name, depends_on, unit_tests,
-                          data_quality_tests, schema)
+                          data_quality_tests, schema, description)
         self.sql_file_path = sql_file_path
 
     def __eq__(self, other):
@@ -133,6 +163,7 @@ class SQLStep(Datastep):
             'unit_tests': self.unit_tests,
             'data_quality_tests': self.data_quality_tests,
             'schema': self.schema,
+            'description': self.description,
             'sql_file_path': self.sql_file_path
         }
 
@@ -150,13 +181,22 @@ class SQLStep(Datastep):
 \"\"\")
 """
 
+    def dagre_shape(self) -> dict:
+        return 'rect'
+
+    def dagre_colour(self) -> dict:
+        return 'Moccasin'
+
+    def dagre_type(self) -> dict:
+        return 'SQL'
+
 
 class UnionStep(Datastep):
     def __init__(self, name: str, depends_on: list = [],
                  unit_tests: list = [], data_quality_tests: list = [],
-                 schema: list = []):
+                 schema: list = [], description: str = ''):
         Datastep.__init__(self, name, depends_on, unit_tests,
-                          data_quality_tests, schema)
+                          data_quality_tests, schema, description)
 
     def __eq__(self, other):
         if isinstance(self, other.__class__):
@@ -174,7 +214,8 @@ class UnionStep(Datastep):
             'depends_on': self.depends_on,
             'unit_tests': self.unit_tests,
             'data_quality_tests': self.data_quality_tests,
-            'schema': self.schema
+            'schema': self.schema,
+            'description': self.description
         }
 
     def compile(self) -> str:
@@ -185,13 +226,22 @@ class UnionStep(Datastep):
 {self.name}_df = {head}_df{tail_append_str}
         """
 
+    def dagre_shape(self) -> dict:
+        return 'diamond'
+
+    def dagre_colour(self) -> dict:
+        return 'SandyBrown'
+
+    def dagre_type(self) -> dict:
+        return 'Union'
+
 
 class PySparkStep(Datastep):
     def __init__(self, name: str, pyspark_file_path: str,
                  depends_on: list = [], unit_tests: list = [],
-                 data_quality_tests: list = [], schema: list = []):
+                 data_quality_tests: list = [], schema: list = [], description: str = ''):
         Datastep.__init__(self, name, depends_on, unit_tests,
-                          data_quality_tests, schema)
+                          data_quality_tests, schema, description)
         self.pyspark_file_path = pyspark_file_path
 
     def __eq__(self, other):
@@ -212,7 +262,8 @@ class PySparkStep(Datastep):
             'pyspark_file_path': self.pyspark_file_path,
             'unit_tests': self.unit_tests,
             'data_quality_tests': self.data_quality_tests,
-            'schema': self.schema
+            'schema': self.schema,
+            'description': self.description
         }
 
     def compile(self) -> str:
@@ -226,3 +277,12 @@ def dataforj_{self.name}({paramaters}):
 
 {self.name}_df = dataforj_{self.name}({paramaters})
 """
+
+    def dagre_shape(self) -> dict:
+        return 'rect'
+
+    def dagre_colour(self) -> dict:
+        return 'coral'
+
+    def dagre_type(self) -> dict:
+        return 'PySpark'
