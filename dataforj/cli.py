@@ -18,7 +18,7 @@ def open_flow(dir: str):
             return flow
 
 
-def init(dir: str, name: str):
+def init(dir: str, name: str, description: str):
     '''
     init a new project in the directory provided
     '''
@@ -28,7 +28,7 @@ def init(dir: str, name: str):
             f'There is aleady a Dataforj project in the directory [{dir}]'
             )
     else:
-        flow = api.init(name)
+        flow = api.init(name, description)
         if not os.path.exists(os.path.dirname(file_name)):
             try:
                 os.makedirs(os.path.dirname(file_name))

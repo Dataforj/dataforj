@@ -5,8 +5,8 @@ from dataforj.datastep import (
 from dataforj.envs import DataforjEnv
 
 
-def init(name: str) -> Dataflow:
-    return Dataflow(name, [], {})
+def init(name: str, description: str) -> Dataflow:
+    return Dataflow(name, [], {}, description)
 
 
 def remove_step(flow: Dataflow, name: str):
@@ -15,9 +15,9 @@ def remove_step(flow: Dataflow, name: str):
 
 
 def add_source_step(flow: Dataflow, name: str, uri: str, format_type: str,
-                    options: dict = {}):
+                    options: dict = {}, description=""):
     step = SourceStep(name=name, uri=uri, format_type=format_type,
-                      options=options)
+                      options=options, description=description)
     flow.add_step(step)
     return flow
 

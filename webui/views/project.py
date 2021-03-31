@@ -15,7 +15,8 @@ def new(request):
         if form.is_valid():
             flow = cli.init(
                 form.cleaned_data['project_location'],
-                form.cleaned_data['project_name'])
+                form.cleaned_data['project_name'],
+                form.cleaned_data['project_description'])
             set_flow(flow)
             return HttpResponseRedirect('/dag/view')
 

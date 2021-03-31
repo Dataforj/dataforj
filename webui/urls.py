@@ -22,4 +22,5 @@ urlpatterns = [
     path('project/open', project.open),
     path('project/new', project.new),
     path('dag/view', dag.view),
+    path('dag/add_source', dag.add_source),
 ]
