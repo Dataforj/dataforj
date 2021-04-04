@@ -61,6 +61,7 @@
     <script src="{% static "js/dagre-d3.js" %}"></script>
     
     <script id="js">
+      var selected_step = null;  //This will be used to know 
       const jsonStepTypes = JSON.parse('{{type_dict_dson}}');
       const stepTypesMap = new Map(Object.entries(jsonStepTypes));
       const jsonStepDescriptions = JSON.parse('{{desc_dict_dson}}');
@@ -97,6 +98,9 @@
       var selections = inner.selectAll("g.node");
       selections.on('click', function (selectedName) { 
         console.log(selectedName);
+        
+        var addChildForm = document.getElementById("step-action-form");
+        addChildForm.value = selectedName;
         var stepCard = document.getElementById("project-card");
         stepCard.style.display = "none";
         var stepCard = document.getElementById("step-card");
@@ -135,9 +139,13 @@
                 <p class="card-text" id="card-text">
                   Step Description
                 </p>
-                <a href="#" class="btn btn-primary">Edit</a>
-                <a href="#" class="btn btn-primary">Delete</a>
-                <a href="#" class="btn btn-primary">Add child</a>
+                <form method="post" action="run_delete_add_step">
+                  {% csrf_token %}
+                  <input type="hidden" name="step_name" value="NOT_SET" id="step-action-form">
+                  <button type="submit" name="run" class="btn btn-primary">Run</button>
+                  <button type="submit" name="delete" class="btn btn-primary">Delete</button>
+                  <button type="submit" name="add" class="btn btn-primary">Add child</button>
+                </form>
               </div>
             </div>
 

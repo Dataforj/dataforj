@@ -72,10 +72,8 @@ def parse_graph(steps: list) -> list:
 
 
 def to_dagre_nodes_edges(steps: dict) -> str:
-    print(f'steps [{steps}]')
     result = []
     for step in steps.values():
-        print(f'step [{step}]')
         result.append(f'g.setNode(\"{step.name}\", '
             f'{{labelType: \"html\", '
             f'label: \"<b>{step.dagre_type()}</b><br>{step.name}\", '

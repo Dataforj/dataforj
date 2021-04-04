@@ -23,4 +23,9 @@ urlpatterns = [
     path('project/new', project.new),
     path('dag/view', dag.view),
     path('dag/add_source', dag.add_source),
+    path('dag/run_delete_add_step', dag.run_delete_add_step),
+    path('dag/add_sql', dag.add_sql),
+    path('dag/add_pyspark', dag.add_pyspark),
+    path('dag/add_union', dag.add_union),
+    path('dag/add_sink', dag.add_sink)
 ]
