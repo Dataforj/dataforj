@@ -37,7 +37,7 @@ The UI has very basic features at the moment.  You can:
 - run a step and see 10 records from the result
 - edit and run SQL and Python code
 
-Simple features like saving the code are not there yet.
+Simple features like saving the code are not there yet.  Neither has there been any work on more advanced features like creating and running unit tests, data quality checks, etc.
 
 To try the UI follow these steps.
 
