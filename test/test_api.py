@@ -7,10 +7,11 @@ from test.test_samples import flow_complex
 class APITest(unittest.TestCase):
 
     def test_init(self) -> Dataflow:
-        self.assertEqual(api.init('name'), Dataflow('name', [], {}))
+        self.assertEqual(api.init(name='name', description='desc'), 
+                         Dataflow(name='name', graph=[], step_configs={}, description='desc'))
 
     def test_all(self):
-        flow = api.init('complex')
+        flow = api.init('complex', 'complex')
 
         api.add_source_step(flow=flow, name='s1', uri='fake_file_path',
                             format_type='csv', options={})

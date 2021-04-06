@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load staticfiles%} 
+
+{% block title %}Run SQL{% endblock %}
+
+{% block content %}
+<div>
+  <div>
+    <div class="col-sm-12 col-lg-12">
+    <table class="table table-white data-table">
+      <thead>
+        <tr>
+          {% for column in header_columns %}
+              <th>{{column}}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for row in rows %}
+            <tr>
+                {% for column in header_columns %}
+                    <td>{{row|dict_key:column}}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+<p></p>
+
+{% if error_message %}
+  <div class="alert alert-danger" role="alert">
+    {{ error_message }}
+  </div>
+{% endif %}
+{% endblock content %}

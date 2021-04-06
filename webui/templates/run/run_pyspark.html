@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load staticfiles%} 
+
+{% block title %}Run SQL{% endblock %}
+
+{% block content %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
+
+<style type="text/css" media="screen">
+    #function_def {
+        /** Setting height is also important, otherwise editor wont showup**/
+        height: 30px;
+        width: 100%;
+    }
+    #editor {
+        /** Setting height is also important, otherwise editor wont showup**/
+        height: 175px;
+        width: 100%;
+    }
+</style>
+<form id="sql-form" action="../run/run_pyspark_submit" method="post" autocomplete="off">
+
+    <input type="hidden" id="step_name" name="step_name" style="display: none;" value="{{step_name}}">
+    <input type="hidden" id="pyspark_code" name="pyspark_code" style="display: none;">
+
+    <div type="text" id="function_def" name="function_def" contenteditable="false">{{function_def}}</div>
+    <div type="text" id="editor" name="editor">{{pyspark_code}}</div>
+
+    <p></p>
+
+    <div>
+        <div>
+            {% csrf_token %}
+            <button type="submit" form="sql-form" class="btn btn-sm btn-primary mt-10">
+              <i class="fa fa-play t-12"></i>
+              Run Code</button>
+        </div>
+    </div>
+</form>
+
+<p></p>
+
+<div>
+  <div>
+    <div class="col-sm-12 col-lg-12">
+    <table class="table table-white data-table">
+      <thead>
+        <tr>
+          {% for column in header_columns %}
+              <th>{{column}}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for row in rows %}
+            <tr>
+                {% for column in header_columns %}
+                    <td>{{row|dict_key:column}}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+<p></p>
+
+{% if error_message %}
+  <div class="alert alert-danger" role="alert">
+    {{ error_message }}
+  </div>
+{% endif %}
+
+<script type="text/javascript">
+
+    var function_def = ace.edit("function_def");
+    function_def.setTheme("ace/theme/tomorrow");
+    function_def.getSession().setMode("ace/mode/python");
+    function_def.setOptions({
+      readOnly: true,
+      highlightActiveLine: false,
+      highlightGutterLine: false,
+      'showLineNumbers': false
+    });
+
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/tomorrow");
+    editor.getSession().setMode("ace/mode/python");
+    editor.setOptions({
+      'showLineNumbers': false
+    });
+
+    editor.getSession().on("change", function () {
+        $("#pyspark_code").val(editor.getSession().getValue())
+    });
+
+    $("#pyspark_code").val(editor.getSession().getValue());
+
+</script>
+{% endblock content %}

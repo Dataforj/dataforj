@@ -11,11 +11,11 @@ file_name = '/tmp/dataforj_ut/dataforj.yaml'
 class CLITest(unittest.TestCase):
 
     def test_init(self):
-        cli.init(dir_path, 'ut')
+        cli.init(dir_path, 'ut', 'desc')
         with open(file_name, 'r+') as f:
             yaml = '\n'.join(f.readlines())
             flow = dataflow.from_yaml(yaml)
-            flow2 = Dataflow.from_python_objects('ut', [])
+            flow2 = Dataflow.from_python_objects('ut', 'desc', [])
             self.assertEqual(flow._steps, flow2._steps)
 
     def setUp(self):

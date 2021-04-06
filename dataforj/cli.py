@@ -4,23 +4,47 @@ import dataforj.dataflow as dataflow
 from dataforj.envs import DataforjEnv
 
 
-def init(dir: str, name: str):
+def open_flow(dir: str, env_name: str):
+    '''
+    open a project in the directory provided
+    '''
+    file_name = f'{dir}/dataforj.yaml'
+    if not os.path.exists(file_name):
+        raise Exception('There is no Dataforj project in this directory')
+    else:
+        with open(file_name, 'r+') as f:
+            yaml = '\n'.join(f.readlines())
+            env = DataforjEnv('flow.name', env_name)
+            yaml_plus_vars = yaml \
+                .format_map(env.env_config['dataflow-config'])
+            flow = dataflow.from_yaml(yaml_plus_vars)
+            return flow
+
+
+def init(dir: str, name: str, description: str):
     '''
     init a new project in the directory provided
     '''
-    file_name = dir + '/dataforj.yaml'
+    file_name = f'{dir}/dataforj.yaml'
     if os.path.exists(file_name):
         raise Exception(
             f'There is aleady a Dataforj project in the directory [{dir}]'
             )
     else:
-        flow = api.init(name)
+        flow = api.init(name, description)
+        if not os.path.exists(os.path.dirname(file_name)):
+            try:
+                os.makedirs(os.path.dirname(file_name))
+            except OSError as exc: # Guard against race condition
+                if exc.errno != errno.EEXIST:
+                    raise
         with open(file_name, 'w') as writer:
             writer.write(flow.to_yaml())
+        return flow    
 
 
 def remove_step(dir: str, name: str):
-    file_name = dir + '/dataforj.yaml'
+    file_name = f'{dir}/dataforj.yaml'
     if not os.path.exists(file_name):
         raise Exception('There is no Dataforj project in this directory')
     else:
@@ -54,7 +78,7 @@ def add_step(dir: str, name: str, step_type: str, depends_on_list: str):
 
 
 def add_source_step(dir: str, name: str, uri: str, format_type: str):
-    file_name = dir + '/dataforj.yaml'
+    file_name = f'{dir}/dataforj.yaml'
     if not os.path.exists(file_name):
         raise Exception('There is no Dataforj project in this directory')
     else:
@@ -69,7 +93,7 @@ def add_source_step(dir: str, name: str, uri: str, format_type: str):
 
 def add_sink_step(dir: str, name: str, depends_on: list, uri: str,
                   format_type: str):
-    file_name = dir + '/dataforj.yaml'
+    file_name = f'{dir}/dataforj.yaml'
     if not os.path.exists(file_name):
         raise Exception('There is no Dataforj project in this directory')
     else:
@@ -84,7 +108,7 @@ def add_sink_step(dir: str, name: str, depends_on: list, uri: str,
 
 
 def add_sql_step(dir: str, name: str, depends_on: list, sql_file_path: str):
-    file_name = dir + '/dataforj.yaml'
+    file_name = f'{dir}/dataforj.yaml'
     if not os.path.exists(file_name):
         raise Exception('There is no Dataforj project in this directory')
     else:
@@ -101,7 +125,7 @@ def add_sql_step(dir: str, name: str, depends_on: list, sql_file_path: str):
 
 def add_pyspark_step(dir: str, name: str, depends_on: list,
                      pyspark_file_path: str):
-    file_name = dir + '/dataforj.yaml'
+    file_name = f'{dir}/dataforj.yaml'
     if not os.path.exists(file_name):
         raise Exception('There is no Dataforj project in this directory')
     else:
@@ -116,7 +140,7 @@ def add_pyspark_step(dir: str, name: str, depends_on: list,
 
 
 def add_union_step(dir: str, name: str, depends_on: list):
-    file_name = dir + '/dataforj.yaml'
+    file_name = f'{dir}/dataforj.yaml'
     if not os.path.exists(file_name):
         raise Exception('There is no Dataforj project in this directory')
     else:
@@ -175,4 +199,4 @@ def debug_step(dir: str, env_name: str, step: str):
 
 
 if __name__ == "__main__":
-    run('example', 'local')
+    print(open_flow('/Users/patrickmcgloin/work/dataforj/example').to_dagre_nodes_edges())

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Add a new Source{% endblock %}
+
+{% block content %}
+<div>
+    <form method="post" action="add_step_submit">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-primary">Add Step</button>
+    </form>
+</div>    
+{% endblock content %}

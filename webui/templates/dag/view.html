@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% load staticfiles%} 
+
+{% block title %}DAG view [{{ name }}]{% endblock %}
+
+{% block content %}
+{% autoescape off %}
+<style>
+    html, body {
+      height: 100%;
+    }
+    
+    .full-height {
+      height: 100%;
+    }
+
+  text {
+    font-weight: 300;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serf;
+    font-size: 14px;
+  }
+
+  .node rect {
+    stroke: #333;
+  }
+
+  .node circle {
+    stroke: #333;
+  }
+
+  .edgePath path {
+    stroke: #333;
+    fill: #333;
+    stroke-width: 1.5px;
+  }
+
+  .node text {
+    pointer-events: none;
+  }
+
+  /* This styles the title of the tooltip */
+  .tipsy .name {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #60b1fc;
+    margin: 0;
+  }
+
+  /* This styles the body of the tooltip */
+  .tipsy .description {
+    font-size: 1.2em;
+  }
+</style>
+
+<div class="full-height">
+  <span class="float-left w-75 h-100"  height="100%">
+    <div  class="full-height">
+      <svg height="100%" width=100%><g/></svg>
+    </div>
+    <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>
+    <script src="{% static "js/dagre-d3.js" %}"></script>
+    
+    <script id="js">
+      var selected_step = null;  //This will be used to know 
+      const jsonStepTypes = JSON.parse('{{type_dict_dson}}');
+      const stepTypesMap = new Map(Object.entries(jsonStepTypes));
+      const jsonStepDescriptions = JSON.parse('{{desc_dict_dson}}');
+      const stepDescriptionsMap = new Map(Object.entries(jsonStepDescriptions));
+
+      // Create a new directed graph
+      var g = new dagreD3.graphlib.Graph().setGraph({});
+
+      // Set an object for the graph label
+      g.setGraph({});
+
+      // Default to assigning a new object as a label for each new edge.
+      g.setDefaultEdgeLabel(function() { return {}; });
+
+      // The JS for creating the nodes and connecting the edges has been provided as dagre_nodes_edges_js.
+      //It will be in the format ->
+      //g.setNode("customers", {labelType: "html", label: "<b>Source</b><br>customers", shape: "circle", style: "fill: chartreuse"});
+      //g.setNode("customers_latest", {labelType: "html", label: "<b>SQL</b><br>customers_latest", shape: "rect", style: "fill: Moccasin"});
+      //g.setEdge("customers", "customers_latest");
+      {{dagre_nodes_edges_js}}
+
+      g.graph().rankDir = 'LR';
+
+      // Create the renderer
+      var render = new dagreD3.render();
+
+      // Set up an SVG group so that we can translate the final graph.
+      var svg = d3.select("svg"),
+      inner = svg.append("g");
+
+      // Run the renderer. This is what draws the final graph.
+      render(inner, g);
+
+      var selections = inner.selectAll("g.node");
+      selections.on('click', function (selectedName) { 
+        console.log(selectedName);
+        
+        var addChildForm = document.getElementById("step-action-form");
+        addChildForm.value = selectedName;
+        var stepCard = document.getElementById("project-card");
+        stepCard.style.display = "none";
+        var stepCard = document.getElementById("step-card");
+        stepCard.style.display = "block";
+        var cardTitle = document.getElementById("card-title");
+        cardTitle.innerText = selectedName;
+        var cardHeader = document.getElementById("card-header");
+        cardHeader.innerText = stepTypesMap.get(selectedName);
+        var cardText = document.getElementById("card-text");
+        cardText.innerText = stepDescriptionsMap.get(selectedName);
+      });
+    </script>
+  </span>
+    <span class="border float-right w-25 border-secondary rounded">
+        <div>
+
+          <div class="card text-center" style="display: block;"  id="project-card">
+            <div class="card-header">
+              Dataforj DAG
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">{{name}}</h5>
+              <p class="card-text">
+                {{description}}
+              </p>
+              <a href="add_source" class="btn btn-primary">Add Source Step</a>
+            </div>
+          </div>
+
+          <div class="card text-center" style="display: none;"  id="step-card">
+              <div class="card-header" id="card-header">
+                Step Type
+              </div>
+              <div class="card-body">
+                <h5 class="card-title" id="card-title">Step Name</h5>
+                <p class="card-text" id="card-text">
+                  Step Description
+                </p>
+                <form method="post" action="run_delete_add_step">
+                  {% csrf_token %}
+                  <input type="hidden" name="step_name" value="NOT_SET" id="step-action-form">
+                  <button type="submit" name="run" class="btn btn-primary">Run</button>
+                  <button type="submit" name="delete" class="btn btn-primary">Delete</button>
+                  <button type="submit" name="add" class="btn btn-primary">Add child</button>
+                </form>
+              </div>
+            </div>
+
+        </div>
+    </span>
+</div>
+{% endautoescape %}
+{% endblock content %}

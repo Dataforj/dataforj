@@ -5,6 +5,7 @@ Dataforj is a tool to easily create data models with good engineering principles
 ## Features
 
 - runs on any Spark cluster
+- UI
 - supports multiple enviroments
 - CLI
 - text based code
@@ -26,6 +27,49 @@ A Dataforj model is composed of steps which are chained together and executed in
 - PySpark
 
 > TODO: more steps can be added.  E.g. filter, split, etc.  Perhaps some basic ML steps.  With a good UI, there should be a visual SQL editor which would result in an SQL step that is only defined in the YAML.
+
+## UI
+
+The UI has very basic features at the moment.  You can:
+
+- create/open a project
+- add/remove steps to/from the DAG
+- run a step and see 10 records from the result
+- edit and run SQL and Python code
+
+Simple features like saving the code are not there yet.  Neither has there been any work on more advanced features like creating and running unit tests, data quality checks, etc.
+
+To try the UI follow these steps.
+
+### Prerequisites
+
+Apache Spark 3 must be installed locally.
+
+### Clone the project
+
+```sh
+git clone https://github.com/Dataforj/dataforj.git
+```
+
+### Run the UI
+
+```sh
+python manage.py runserver --insecure
+```
+
+### Open the sample project
+
+Use the following URL:
+
+http://127.0.0.1:8000/project/open
+
+To load the example project just use the directory 'example' for the 'Dataforj project location'.
+
+### Create your own project
+
+Use the following URL:
+
+http://127.0.0.1:8000/project/new
 
 ## Runs on any Spark Cluster
 
