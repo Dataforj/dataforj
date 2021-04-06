@@ -165,7 +165,7 @@ class Dataflow(object):
                    self.description == other.description and \
                    self._steps == other._steps and \
                    self._graph == other._graph and \
-                   self.desc == other._graph
+                   self.description == other.description
         return False
 
     def add_step(self, step):
@@ -181,22 +181,24 @@ class Dataflow(object):
                         for step_name in self._graph}
         yaml_contents = {
             'name': self.name,
+            'description': self.description,
             'graph': self._graph,
             'steps': step_configs
             }
         return yaml.dump(yaml_contents)
 
-    def from_python_objects(name: str, steps: list):
+    def from_python_objects(name: str, description: str, steps: list):
+        '''Only used for unit testing.'''
         graph = parse_graph(steps)
         step_configs = {step.name: step.to_yaml() for step in steps}
-        return Dataflow(name, graph, step_configs)
+        return Dataflow(name, graph, step_configs, description)
 
     def run(self, env: DataforjEnv):
         exec("from pyspark.sql import SparkSession")
         exec(env.spark_session_build())
         for step_name in self._graph:
             code = self._steps[step_name].compile()
-            # print(code)
+            print(f'Running step [{step_name}]')
             exec(code)
             for test_path in self._steps[step_name].data_quality_tests:
                 test_code = dq_to_pyspark(step_name, test_path)
@@ -225,7 +227,7 @@ class Dataflow(object):
         fail_count = 0
         for step_name in self._graph:
             code = self._steps[step_name].compile()
-            # print(code)
+            print(f'Running step [{step_name}]')
             exec(code)
             if(step == '__ALL__' or step_name == step) and not \
               (isinstance(self._steps[step_name], SourceStep) or
@@ -262,11 +264,22 @@ class Dataflow(object):
         exec(env.spark_session_build())
         for step_name in self._graph:
             code = self._steps[step_name].compile()
-            # print(code)
+            print(f'Running step [{step_name}]')
             exec(code)
             if(step_name == step):
                 exec(f'{step_name}_df.show()')
                 break
+
+
+    def dataframe_for_step(self, env: DataforjEnv, step: str):
+        exec('from pyspark.sql import SparkSession')
+        exec(env.spark_session_build())
+        for step_name in self._graph:
+            code = self._steps[step_name].compile()
+            print(f'Running step [{step_name}]')
+            exec(code)
+            if(step_name == step):
+                return locals()[f'{step_name}_df']
 
     def to_dagre_nodes_edges(self):
         return to_dagre_nodes_edges(self._steps)        

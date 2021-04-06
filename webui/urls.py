@@ -15,17 +15,21 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from webui.views import project, dag
+from webui.views import project, dag, run
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', project.open),
     path('project/open', project.open),
     path('project/new', project.new),
     path('dag/view', dag.view),
     path('dag/add_source', dag.add_source),
     path('dag/run_delete_add_step', dag.run_delete_add_step),
+    path('dag/add_step_submit', dag.add_step_submit),
     path('dag/add_sql', dag.add_sql),
     path('dag/add_pyspark', dag.add_pyspark),
     path('dag/add_union', dag.add_union),
-    path('dag/add_sink', dag.add_sink)
+    path('dag/add_sink', dag.add_sink),
+    path('run/run_sql_submit', run.run_sql_submit),
+    path('run/run_pyspark_submit', run.run_pyspark_submit)
 ]

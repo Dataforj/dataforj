@@ -4,7 +4,7 @@ import dataforj.dataflow as dataflow
 from dataforj.envs import DataforjEnv
 
 
-def open_flow(dir: str):
+def open_flow(dir: str, env_name: str):
     '''
     open a project in the directory provided
     '''
@@ -14,7 +14,10 @@ def open_flow(dir: str):
     else:
         with open(file_name, 'r+') as f:
             yaml = '\n'.join(f.readlines())
-            flow = dataflow.from_yaml(yaml)
+            env = DataforjEnv('flow.name', env_name)
+            yaml_plus_vars = yaml \
+                .format_map(env.env_config['dataflow-config'])
+            flow = dataflow.from_yaml(yaml_plus_vars)
             return flow
 
 

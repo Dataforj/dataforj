@@ -11,8 +11,10 @@ class AddSourceForm(forms.Form):
     step_name = forms.CharField(label='Step name', max_length=100)
     step_description = forms.CharField(label='Step description')
     uri = forms.CharField(label='URI, i.e. location of the source data')
-    format_type = forms.CharField(label='Forat of the data (e.g. CSV, Parquet, etc)')
-    options_text = forms.CharField(widget=forms.Textarea, label='Options seperated by newlines in the form k=v, e.g. delimiter=True')
+    format_type = forms.CharField(label='Format of the data (e.g. CSV, Parquet, etc)')
+    options_text = forms.CharField(widget=forms.Textarea, 
+                                   required=False,
+                                   label='Options seperated by newlines in the form k=v, e.g. delimiter=True')
 
     helper = FormHelper()
     helper.form_class = 'form-horizontal'

@@ -35,7 +35,9 @@ def open(request):
         # check whether it's valid:
         if form.is_valid():
             flow = cli.open_flow(
-                form.cleaned_data['project_location'])
+                dir=form.cleaned_data['project_location'],
+                env_name='local'
+                )
             set_flow(flow)
             return HttpResponseRedirect('/dag/view')
 

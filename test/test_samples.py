@@ -3,7 +3,7 @@ from dataforj.datastep import (
     SourceStep, SQLStep, SinkStep, UnionStep
 )
 
-flow_simple = Dataflow.from_python_objects('simple', [
+flow_simple = Dataflow.from_python_objects(name='simple', description='simple', steps=[
                 SourceStep(name='sample', uri='fake_file_path',
                            format_type='csv', options={}),
                 SQLStep(name='grouper', depends_on=['sample'],
@@ -11,7 +11,7 @@ flow_simple = Dataflow.from_python_objects('simple', [
                 SinkStep(name='sinker', depends_on=['grouper'],
                          uri='fake_file_path', format_type='csv',
                          options={}, mode='overwrite')])
-flow_complex = Dataflow.from_python_objects('complex', [
+flow_complex = Dataflow.from_python_objects(name='complex', description='complex', steps=[
                 SourceStep(name='s1', uri='fake_file_path', format_type='csv',
                            options={}),
                 SourceStep(name='s2', uri='fake_file_path', format_type='csv',
@@ -32,7 +32,8 @@ flow_complex = Dataflow.from_python_objects('complex', [
                          uri='fake_file_path', format_type='csv',
                          options={}, mode='overwrite')])
 
-simple_yaml_text = '''graph:
+simple_yaml_text = '''description: simple
+graph:
 - sample
 - grouper
 - sinker
@@ -42,6 +43,7 @@ steps:
     data_quality_tests: []
     depends_on:
     - sample
+    description: ''
     name: grouper
     schema: []
     sql_file_path: my_file.sql
@@ -50,6 +52,7 @@ steps:
   sample:
     data_quality_tests: []
     depends_on: []
+    description: ''
     format_type: csv
     name: sample
     options: {}
@@ -61,6 +64,7 @@ steps:
     data_quality_tests: []
     depends_on:
     - grouper
+    description: ''
     format_type: csv
     mode: overwrite
     name: sinker

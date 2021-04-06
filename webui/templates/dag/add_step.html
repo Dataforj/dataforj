@@ -5,7 +5,7 @@
 
 {% block content %}
 <div>
-    <form method="post">
+    <form method="post" action="add_step_submit">
         {% csrf_token %}
         {{ form|crispy }}
         <button type="submit" class="btn btn-primary">Add Step</button>

@@ -21,7 +21,7 @@ class DataflowTest(unittest.TestCase):
 
     def test__init_graph_exception(self):
         with self.assertRaises(AssertionError) as excinfo:
-            Dataflow.from_python_objects('exception', [
+            Dataflow.from_python_objects('exception', 'description', [
                 SourceStep(name='sample', uri='fake_file_path',
                            format_type='csv', options={}),
                 SinkStep(name='failer', depends_on=['failer'],
@@ -38,7 +38,7 @@ class DataflowTest(unittest.TestCase):
         self.assertEqual(yaml_flow.to_yaml(), flow_simple.to_yaml())
 
     def test_add_step(self):
-        flow = Dataflow.from_python_objects('complex', [])
+        flow = Dataflow.from_python_objects('complex', 'complex', [])
         flow.add_step(SourceStep(name='s1', uri='fake_file_path',
                                  format_type='csv', options={}, ))
         flow.add_step(SourceStep(name='s2', uri='fake_file_path',
@@ -61,7 +61,7 @@ class DataflowTest(unittest.TestCase):
         self.assertEqual(flow._steps, flow_complex._steps)
 
     def test_add_step_reversed(self):
-        flow = Dataflow.from_python_objects('complex', [])
+        flow = Dataflow.from_python_objects('complex', 'complex', [])
         flow.add_step(SinkStep(name='sink2', depends_on=['sql4'],
                                uri='fake_file_path', format_type='csv',
                                options={}, mode='overwrite'))
@@ -84,7 +84,7 @@ class DataflowTest(unittest.TestCase):
         self.assertEqual(flow._steps, flow_complex._steps)
 
     def test_run(self):
-        flow = Dataflow.from_python_objects('example data', [
+        flow = Dataflow.from_python_objects('example data', 'description', [
                 SourceStep(name='customers', uri='example/data/customers.csv',
                            format_type='csv', options={'header': 'true'}),
                 SourceStep(name='products', uri='example/data/products.csv',
