@@ -77,7 +77,7 @@ Dataforj can connect to and run on any Spark cluster or service (e.g. Databricks
 
 ## Environments
 
-One of the goals of Dataforj is to make it simple to run models on different environments easily.  Each project has an env folder where YAML files with the config for each environment are located.  This YAML file can be used to specify the connection to the Spark cluster for the environment, and environment specific values that will be replaced in the project YAML (e.g. the location where a Source step should pick up the data).
+One of the goals of Dataforj is to make it simple to run models on different environments easily.  Each project has an envs folder where YAML files with the config for each environment are located.  This YAML file can be used to specify the connection to the Spark cluster for the environment, and environment specific values that will be replaced in the project YAML (e.g. the location where a Source step should pick up the data).
 
 An example for local testing that will use a local instance of Spark could look like this.
 
@@ -86,6 +86,9 @@ spark:
   master: 'local[4]'
   SparkConf: 
     "spark.sql.warehouse.dir": "ignore"
+
+dataflow-config:
+  customers_uri: 'example/data/customers.csv'    
 ```
 
 An example for connecting to a PRD Cloudera cluster could look like this:
@@ -95,7 +98,12 @@ spark:
   master: 'prdcluster.network.com:7077'
   SparkConf: 
     "spark.sql.warehouse.dir": "ignore"
+
+dataflow-config:
+  customers_uri: 'hdfs://prd.serv.er:8020/production/data/customers.csv'    
 ```
+
+Similarly you can see a local file location is used while testing locally and in PRD a connection to a HDFS cluster is used.
 
 ## CLI
 
