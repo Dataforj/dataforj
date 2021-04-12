@@ -45,7 +45,7 @@ steps:
     - sample
     description: ''
     name: grouper
-    schema: []
+    schema_location: ''
     sql_file_path: my_file.sql
     type: SQLStep
     unit_tests: []
@@ -56,7 +56,7 @@ steps:
     format_type: csv
     name: sample
     options: {}
-    schema: []
+    schema_location: ''
     type: SourceStep
     unit_tests: []
     uri: fake_file_path
@@ -69,7 +69,7 @@ steps:
     mode: overwrite
     name: sinker
     options: {}
-    schema: []
+    schema_location: ''
     type: SinkStep
     unit_tests: []
     uri: fake_file_path

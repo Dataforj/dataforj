@@ -6,12 +6,12 @@ def read_code_from_file(file_path, left_pad: str = '') -> str:
 
 class Datastep():
     def __init__(self, name: str, depends_on: list = [], unit_tests: list = [],
-                 data_quality_tests: list = [], schema: list = [], description: str = ''):
+                 data_quality_tests: list = [], schema_location: str = '', description: str = ''):
         self.name = name
         self.depends_on = depends_on
         self.unit_tests = unit_tests
         self.data_quality_tests = data_quality_tests
-        self.schema = schema
+        self.schema_location = schema_location
         self.description = description
 
     def to_yaml(self) -> dict:
@@ -33,9 +33,9 @@ class Datastep():
 class SourceStep(Datastep):
     def __init__(self, name, uri: str, format_type: str,
                  options: dict, depends_on: list = [], unit_tests: list = [],
-                 data_quality_tests: list = [], schema: list = [], description: str = ''):
+                 data_quality_tests: list = [], schema_location: str = '', description: str = ''):
         Datastep.__init__(self, name, depends_on, unit_tests,
-                          data_quality_tests, schema, description)
+                          data_quality_tests, schema_location, description)
         self.uri = uri
         self.format_type = format_type
         self.options = options
@@ -46,7 +46,7 @@ class SourceStep(Datastep):
                    self.depends_on == other.depends_on and \
                    self.unit_tests == other.unit_tests and \
                    self.data_quality_tests == other.data_quality_tests and \
-                   self.schema == other.schema and \
+                   self.schema_location == other.schema_location and \
                    self.uri == other.uri and \
                    self.format_type == other.format_type
         return False
@@ -58,7 +58,7 @@ class SourceStep(Datastep):
             'depends_on': self.depends_on,
             'unit_tests': self.unit_tests,
             'data_quality_tests': self.data_quality_tests,
-            'schema': self.schema,
+            'schema_location': self.schema_location,
             'description': self.description,
             'uri': self.uri,
             'format_type': self.format_type,
@@ -89,9 +89,9 @@ class SinkStep(Datastep):
     def __init__(self, name: str, uri: str, format_type: str,
                  options: dict, mode: str, depends_on: list = [],
                  unit_tests: list = [], data_quality_tests: list = [],
-                 schema: list = [], description: str = ''):
+                 schema_location: str = '', description: str = ''):
         Datastep.__init__(self, name, depends_on, unit_tests,
-                          data_quality_tests, schema, description)
+                          data_quality_tests, schema_location, description)
         self.uri = uri
         self.format_type = format_type
         self.options = options
@@ -103,7 +103,7 @@ class SinkStep(Datastep):
                    self.depends_on == other.depends_on and \
                    self.unit_tests == other.unit_tests and \
                    self.data_quality_tests == other.data_quality_tests and \
-                   self.schema == other.schema and \
+                   self.schema_location == other.schema_location and \
                    self.uri == other.uri and \
                    self.format_type == other.format_type and \
                    self.mode == other.mode
@@ -116,7 +116,7 @@ class SinkStep(Datastep):
             'depends_on': self.depends_on,
             'unit_tests': self.unit_tests,
             'data_quality_tests': self.data_quality_tests,
-            'schema': self.schema,
+            'schema_location': self.schema_location,
             'description': self.description,
             'uri': self.uri,
             'format_type': self.format_type,
@@ -149,9 +149,9 @@ class SinkStep(Datastep):
 class SQLStep(Datastep):
     def __init__(self, name: str, sql_file_path: str, depends_on: list = [],
                  unit_tests: list = [], data_quality_tests: list = [],
-                 schema: list = [], description: str = ''):
+                 schema_location: str = '', description: str = ''):
         Datastep.__init__(self, name, depends_on, unit_tests,
-                          data_quality_tests, schema, description)
+                          data_quality_tests, schema_location, description)
         self.sql_file_path = sql_file_path
         self.sql_from_editor = None
 
@@ -161,7 +161,7 @@ class SQLStep(Datastep):
                    self.depends_on == other.depends_on and \
                    self.unit_tests == other.unit_tests and \
                    self.data_quality_tests == other.data_quality_tests and \
-                   self.schema == other.schema and \
+                   self.schema_location == other.schema_location and \
                    self.sql_file_path == other.sql_file_path and \
                    self.sql_from_editor == other.sql_from_editor
         return False
@@ -173,7 +173,7 @@ class SQLStep(Datastep):
             'depends_on': self.depends_on,
             'unit_tests': self.unit_tests,
             'data_quality_tests': self.data_quality_tests,
-            'schema': self.schema,
+            'schema_location': self.schema_location,
             'description': self.description,
             'sql_file_path': self.sql_file_path
         }
@@ -209,9 +209,9 @@ class SQLStep(Datastep):
 class UnionStep(Datastep):
     def __init__(self, name: str, depends_on: list = [],
                  unit_tests: list = [], data_quality_tests: list = [],
-                 schema: list = [], description: str = ''):
+                 schema_location: str = '', description: str = ''):
         Datastep.__init__(self, name, depends_on, unit_tests,
-                          data_quality_tests, schema, description)
+                          data_quality_tests, schema_location, description)
 
     def __eq__(self, other):
         if isinstance(self, other.__class__):
@@ -219,7 +219,7 @@ class UnionStep(Datastep):
                    self.depends_on == other.depends_on and \
                    self.unit_tests == other.unit_tests and \
                    self.data_quality_tests == other.data_quality_tests and \
-                   self.schema == other.schema
+                   self.schema_location == other.schema_location
         return False
 
     def to_yaml(self) -> dict:
@@ -229,7 +229,7 @@ class UnionStep(Datastep):
             'depends_on': self.depends_on,
             'unit_tests': self.unit_tests,
             'data_quality_tests': self.data_quality_tests,
-            'schema': self.schema,
+            'schema_location': self.schema_location,
             'description': self.description
         }
 
@@ -254,9 +254,9 @@ class UnionStep(Datastep):
 class PySparkStep(Datastep):
     def __init__(self, name: str, pyspark_file_path: str,
                  depends_on: list = [], unit_tests: list = [],
-                 data_quality_tests: list = [], schema: list = [], description: str = ''):
+                 data_quality_tests: list = [], schema_location: str = '', description: str = ''):
         Datastep.__init__(self, name, depends_on, unit_tests,
-                          data_quality_tests, schema, description)
+                          data_quality_tests, schema_location, description)
         self.pyspark_file_path = pyspark_file_path
         self.pyspark_code_from_editor = None
 
@@ -266,7 +266,7 @@ class PySparkStep(Datastep):
                    self.depends_on == other.depends_on and \
                    self.unit_tests == other.unit_tests and \
                    self.data_quality_tests == other.data_quality_tests and \
-                   self.schema == other.schema and \
+                   self.schema_location == other.schema_location and \
                    self.pyspark_file_path == other.pyspark_file_path and \
                    self.pyspark_code_from_editor == other.pyspark_code_from_editor
                    
@@ -280,7 +280,7 @@ class PySparkStep(Datastep):
             'pyspark_file_path': self.pyspark_file_path,
             'unit_tests': self.unit_tests,
             'data_quality_tests': self.data_quality_tests,
-            'schema': self.schema,
+            'schema_location': self.schema_location,
             'description': self.description
         }
 
