@@ -2,6 +2,8 @@ import yaml
 from pyspark.sql import *
 
 def dq_to_pyspark(name: str, file_path: str) -> str:
+    '''Takes a user defined Python script for the dq check, and turns it into'''
+    '''PySpark code that can be executed'''
     with open(file_path, 'r') as f:
         code = '\t'.join(f.readlines())
         return f"""
@@ -13,6 +15,7 @@ dataforj_dq_{name}({name}_df)
 
 
 def dq_not_null(name: str, column_name: str) -> str:
+    '''Creates PySpark code to check that all values for a column are not null'''
     return f"""
 def dataforj_dq_not_null_{name}(df):
     from pyspark.sql.functions import col
@@ -26,6 +29,8 @@ dataforj_dq_not_null_{name}(df)
 
 def dq_accepted_values(name: str, column_name: str,
                        accepted_values: list) -> str:
+    '''Creates PySpark code to check that all values for a column are within'''
+    '''an accepted values list'''
     return f"""
 def dq_accepted_values_{name}(df):
     from pyspark.sql.functions import col
