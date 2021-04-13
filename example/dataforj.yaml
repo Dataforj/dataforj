@@ -14,7 +14,7 @@ steps:
     depends_on: []
     unit_tests: []
     data_quality_tests: []
-    schema: []
+    schema_location: ''
     format_type: csv
     description: Latest daily extract of all customers in CSV form.
     name: customers
@@ -27,7 +27,7 @@ steps:
     - customers
     unit_tests: []
     data_quality_tests: []
-    schema: []
+    schema_location: ''
     name: customers_latest
     description: Selects the latest customers.
     sql_file_path: example/sql/customers_latest.sql
@@ -43,19 +43,12 @@ steps:
     description: Filter based on the flag which is passed in.
     pyspark_file_path: example/pyspark/filter.py
     type: PySparkStep
-    schema:
-      - name: city
-        tests: 
-          - not_null
-          - accepted_values: ['Amsterdam', 'Dublin', 'Frankfurt']
-      - name: flag
-        tests: 
-          - not_null
+    schema_location: example/schemas/filter_schema.yaml
   products:
     depends_on: []
     unit_tests: []
     data_quality_tests: []
-    schema: []
+    schema_location: ''
     format_type: csv
     name: products
     description: All products from the backend master product system.
@@ -69,7 +62,7 @@ steps:
     - customers_latest
     unit_tests: []
     data_quality_tests: []
-    schema: []
+    schema_location: ''
     name: result
     description: Joins the latest customers with the prod/trans data to create the report.
     sql_file_path: example/sql/result.sql
@@ -79,7 +72,7 @@ steps:
     - filter
     unit_tests: []
     data_quality_tests: []
-    schema: []
+    schema_location: ''
     format_type: csv
     name: sink
     description: Outputs the report as a CSV file.
@@ -92,7 +85,7 @@ steps:
     depends_on: []
     unit_tests: []
     data_quality_tests: []
-    schema: []
+    schema_location: ''
     format_type: csv
     name: transactions
     description: Latest transctions from the backend transction processing system.
@@ -106,7 +99,7 @@ steps:
     - transactions
     unit_tests: []
     data_quality_tests: []
-    schema: []
+    schema_location: ''
     name: transactions_with_products
     description: Joins the product and transaction datasets together.
     sql_file_path: example/sql/transactions_with_products.sql

@@ -155,7 +155,9 @@ There are two types of data quality checks.  The first is schema validation.  Yo
           - not_null
 ```
 
-The second is via a custom Python script that will be executed after the step has completed.  You can expect a DataFrame named in the format {step_name}_df to be available to this script.
+Schemas are externalised into seperate YAML files and typically stored in a 'schemas' folder in the project.  This allows schemas to be used across projects, where needed.  They can then act as contracts between teams.
+
+The second data quality is via a custom Python script that will be executed after the step has completed.  You can expect a DataFrame named in the format {step_name}_df to be available to this script.
 
 ```python
 from pyspark.sql.functions import col, lit

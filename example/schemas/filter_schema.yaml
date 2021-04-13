@@ -1,0 +1,7 @@
+- name: city
+  tests: 
+    - not_null
+    - accepted_values: ['Amsterdam', 'Dublin', 'Frankfurt']
+- name: flag
+  tests: 
+    - not_null

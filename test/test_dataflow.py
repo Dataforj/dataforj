@@ -105,15 +105,7 @@ class DataflowTest(unittest.TestCase):
                 PySparkStep(name='filter',
                             pyspark_file_path='example/pyspark/filter.py',
                             depends_on=['result'],
-                            schema=[{'name': 'city',
-                                    'tests': [
-                                        'not_null',
-                                        {'accepted_values':
-                                            ['Amsterdam',
-                                             'Frankfurt',
-                                             'Dublin']}
-                                        ]
-                                     }]),
+                            schema_location='example/schemas/filter_schema.yaml'),
                 SinkStep(name='sink', uri='example/data/result.csv',
                          format_type='csv', options={'header': 'true'},
                          mode='overwrite', depends_on=['filter'])])
