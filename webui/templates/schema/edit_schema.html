@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load staticfiles%} 
+
+{% block title %}Edit Schema{% endblock %}
+
+{% block content %}
+<form method="post" action="../schema/submit_schema" id="schema_form">{% csrf_token %}</form>
+<div>
+  <table class="table table-white data-table">
+    <thead>
+      <tr>
+        <th>Delete</th>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Accepted Values</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for field in fields %}
+        <tr>
+          <td>
+            <a href="remove_field?field_name={{field.name}}&step_name={{step_name}}">
+              <i class="fa fa-minus-circle t-12"></i>
+            </a>
+          </td>
+          <!-- If the field is to be edited let's make it part of the form -->
+          {% if field.name == edit_field %}
+            <td><input form="schema_form" type="text" id="field_name" name="field_name" value="{{field.name}}" disabled></td>
+            <td><input form="schema_form" type="text" id="field_type" name="field_type" value="{{field.type}}"></td>
+            
+            {% if 'not_null' in field.tests %}
+              <td><input form="schema_form" type="text" id="field_mandatory" name="field_mandatory" value="True"></td>
+            {% else %}
+              <td><input form="schema_form" type="text" id="field_mandatory" name="field_mandatory" value="False"></td>
+            {% endif %}
+            
+            <td><input form="schema_form" type="text" id="field_accepted_values" name="field_accepted_values" value="{{field.tests|get_accepted_values}}"></td>
+          <!-- Else we can just display the values without them being part of the form -->
+          {% else %}
+            <td>{{field.name}}</td>
+            <td>{{field.type}}</td>
+              
+            {% if 'not_null' in field.tests %}
+              <td>True</td>
+            {% else %}
+              <td><False></td>
+            {% endif %}
+
+            <td>{{field.tests|get_accepted_values}}</td>
+          {% endif %}
+          <td>
+            <a href="edit_field?field_name={{field.name}}&step_name={{step_name}}">
+              <i class="fa fa-edit t-12"></i> 
+            </a>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+</div>
+
+<p><p>
+
+<button form="schema_form" class="btn btn-sm btn-primary mt-10">
+  <i class="fa fa-save t-12"></i> Save Schema
+</button>
+
+
+{% endblock content %}

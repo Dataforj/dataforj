@@ -87,4 +87,4 @@ class SchemaTest(unittest.TestCase):
         
 
 if __name__ == "__main__":
-    SchemaTest().test_check_schema()
+    SchemaTest().test_positive_null()

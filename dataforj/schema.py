@@ -47,12 +47,19 @@ def dq_accepted_values_{name}(df):
 dq_accepted_values_{name}(df)
 """
 
-def check_schema(step_name: str, df: DataFrame, schema_yaml_location: str):
-    '''Open a schema file, parse it and then do the actual schema validation'''
+
+def read_schema_from_file(schema_yaml_location: str):
+    '''Reads in a YAML Schema from a file location'''
     with open(schema_yaml_location, 'r') as f:
         yaml_text = '\n'.join(f.readlines())
-        schema_yaml = yaml.safe_load(yaml_text)
-        check_schema_yaml(step_name, df, schema_yaml)
+        return yaml.safe_load(yaml_text)
+
+
+def check_schema(step_name: str, df: DataFrame, schema_yaml_location: str):
+    '''Open a schema file, parse it and then do the actual schema validation'''
+    schema_yaml = read_schema_from_file(schema_yaml_location)
+    check_schema_yaml(step_name, df, schema_yaml)
+
 
 def check_schema_yaml(step_name: str, df: DataFrame, schema_yaml):
     '''Iterate through all columns in a schema and validate the df'''

@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from webui.views import project, dag, run
+from webui.views import project, dag, run, schema
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,5 +31,9 @@ urlpatterns = [
     path('dag/add_union', dag.add_union),
     path('dag/add_sink', dag.add_sink),
     path('run/run_sql_submit', run.run_sql_submit),
-    path('run/run_pyspark_submit', run.run_pyspark_submit)
+    path('run/run_pyspark_submit', run.run_pyspark_submit),
+    path('schema/submit_schema', schema.submit_schema),
+    path('schema/edit_schema', schema.edit_schema),
+    path('schema/edit_field', schema.edit_field),
+    path('schema/remove_field', schema.remove_field)
 ]

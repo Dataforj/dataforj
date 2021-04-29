@@ -1,10 +1,9 @@
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.template import loader
-from webui.dataforj import get_flow
 from webui.forms.run import RunSqlForm, RunPySparkForm
 from dataforj import api
-from webui.dataforj import set_flow
+from webui.dataforj import set_flow, get_flow, set_df
 from dataforj.envs import DataforjEnv
 import json  
 from django.template.defaultfilters import register
@@ -33,6 +32,7 @@ def run_basic_step(step_name: str, request):
     rows = None
     try:
         spark_df = get_flow().dataframe_for_step(env, step_name)
+        set_df(spark_df)
         header_columns = spark_df.schema.names
         rows = spark_df.rdd.map(lambda row: row.asDict(True)).take(10)
     except Exception as e:
@@ -40,6 +40,7 @@ def run_basic_step(step_name: str, request):
             
     template = loader.get_template('run/run_step.html')    
     context = {
+        'step_name': step_name,
         'error_message': error_message,
         'header_columns': header_columns,
         'rows': rows
@@ -55,6 +56,7 @@ def run_sql(step_name: str, request):
     rows = None
     try:
         spark_df = get_flow().dataframe_for_step(env, step_name)
+        set_df(spark_df)
         header_columns = spark_df.schema.names
         rows = spark_df.rdd.map(lambda row: row.asDict(True)).take(10)
     except Exception as e:
@@ -86,6 +88,7 @@ def run_sql_submit(request):
             rows = None
             try:
                 spark_df = get_flow().dataframe_for_step(env, step_name)
+                set_df(spark_df)
                 header_columns = spark_df.schema.names
                 rows = spark_df.rdd.map(lambda row: row.asDict(True)).take(10)
             except Exception as e:
@@ -117,6 +120,7 @@ def run_pyspark(step_name: str, request):
     rows = None
     try:
         spark_df = get_flow().dataframe_for_step(env, step_name)
+        set_df(spark_df)
         header_columns = spark_df.schema.names
         rows = spark_df.rdd.map(lambda row: row.asDict(True)).take(10)
     except Exception as e:
@@ -150,6 +154,7 @@ def run_pyspark_submit(request):
             rows = None
             try:
                 spark_df = get_flow().dataframe_for_step(env, step_name)
+                set_df(spark_df)
                 header_columns = spark_df.schema.names
                 rows = spark_df.rdd.map(lambda row: row.asDict(True)).take(10)
             except Exception as e:
