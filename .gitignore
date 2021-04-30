@@ -151,3 +151,6 @@ Thumbs.db #thumbnail cache on Windows
 
 # osx
 .DS_Store
+
+# idea
+.idea

@@ -51,6 +51,20 @@ Apache Spark 3 must be installed locally.
 git clone https://github.com/Dataforj/dataforj.git
 ```
 
+### Install python environment
+
+Run the following command to install a python virtual environment and dependencies. Depends on having python3 already installed.
+
+```sh
+./scripts/setup.sh
+```
+
+Activate the virtual environment with
+
+```sh
+source venv/bin/activate
+```
+
 ### Run the UI
 
 ```sh
