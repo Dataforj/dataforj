@@ -68,7 +68,7 @@ source venv/bin/activate
 ### Run the UI
 
 ```sh
-python manage.py runserver --insecure
+python manage.py runserver
 ```
 
 ### Open the sample project

@@ -15,6 +15,6 @@ virtualenv venv
 source venv/bin/activate
 
 # upgrade local pip
-/Users/benjaminlawson/Code/dataforj/venv/bin/python -m pip install --upgrade pip
+venv/bin/python -m pip install --upgrade pip
 
 pip3 install -r requirements.txt
